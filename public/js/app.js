@@ -8,51 +8,194 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var App = function (_React$Component) {
-  _inherits(App, _React$Component);
+var Friends = function (_React$Component) {
+  _inherits(Friends, _React$Component);
+
+  function Friends() {
+    _classCallCheck(this, Friends);
+
+    return _possibleConstructorReturn(this, (Friends.__proto__ || Object.getPrototypeOf(Friends)).apply(this, arguments));
+  }
+
+  _createClass(Friends, [{
+    key: 'render',
+    value: function render() {
+      return React.createElement(
+        'table',
+        null,
+        React.createElement(
+          'thead',
+          null,
+          React.createElement(
+            'tr',
+            null,
+            React.createElement(
+              'th',
+              null,
+              'ID'
+            ),
+            React.createElement(
+              'th',
+              null,
+              'Name'
+            ),
+            React.createElement(
+              'th',
+              null,
+              'Since'
+            )
+          )
+        ),
+        React.createElement(
+          'tbody',
+          null,
+          this.props.friends && this.props.friends.map(function (friend) {
+            return React.createElement(
+              'tr',
+              null,
+              React.createElement(
+                'td',
+                null,
+                friend._id
+              ),
+              React.createElement(
+                'td',
+                null,
+                friend.name
+              ),
+              React.createElement(
+                'td',
+                null,
+                friend.since
+              )
+            );
+          })
+        )
+      );
+    }
+  }]);
+
+  return Friends;
+}(React.Component);
+
+var App = function (_React$Component2) {
+  _inherits(App, _React$Component2);
 
   function App(props) {
     _classCallCheck(this, App);
 
-    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+    var _this2 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-    _this.state = {
+    _this2.state = {
       friends: [],
       name: '',
       id: '',
       notes: ''
     };
 
-    _this.create = _this.create.bind(_this);
-    _this.update = _this.update.bind(_this);
-    _this.delete = _this.delete.bind(_this);
-    _this.handleChange = _this.handleChange.bind(_this);
-    return _this;
+    _this2.create = _this2.create.bind(_this2);
+    _this2.update = _this2.update.bind(_this2);
+    _this2.delete = _this2.delete.bind(_this2);
+    _this2.handleChange = _this2.handleChange.bind(_this2);
+    return _this2;
   }
 
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      // get all entities - GET
+      var _this3 = this;
 
+      // get all entities - GET
+      fetch("https://fairestdb.p.rapidapi.com/friend/friendModel", {
+        "method": "GET",
+        "headers": {
+          "x-rapidapi-host": "fairestdb.p.rapidapi.com",
+          "x-rapidapi-key": "fb23ab4ad4mshbecb8ba936f9fe7p101930jsn9e4bc76f18c0"
+        }
+      }).then(function (response) {
+        return response.json();
+      }).then(function (response) {
+        _this3.setState({
+          friends: response
+        });
+      }).catch(function (err) {
+        console.log(err);
+      });
     }
   }, {
     key: 'create',
     value: function create(e) {
       // add entity - POST
       e.preventDefault();
+
+      // creates entity
+      fetch("https://fairestdb.p.rapidapi.com/friend/friendModel", {
+        "method": "POST",
+        "headers": {
+          "x-rapidapi-host": "fairestdb.p.rapidapi.com",
+          "x-rapidapi-key": "fb23ab4ad4mshbecb8ba936f9fe7p101930jsn9e4bc76f18c0",
+          "content-type": "application/json",
+          "accept": "application/json"
+        },
+        "body": JSON.stringify({
+          name: this.state.name,
+          notes: this.state.notes
+        })
+      }).then(function (response) {
+        return response.json();
+      }).then(function (response) {
+        console.log(response);
+      }).catch(function (err) {
+        console.log(err);
+      });
     }
   }, {
     key: 'update',
     value: function update(e) {
       // update entity - PUT
       e.preventDefault();
+
+      // this will update entries with PUT
+      fetch("https://fairestdb.p.rapidapi.com/friend/friendModel", {
+        "method": "PUT",
+        "headers": {
+          "x-rapidapi-host": "fairestdb.p.rapidapi.com",
+          "x-rapidapi-key": "fb23ab4ad4mshbecb8ba936f9fe7p101930jsn9e4bc76f18c0",
+          "content-type": "application/json",
+          "accept": "application/json"
+        },
+        "body": JSON.stringify({
+          _id: this.state.id,
+          name: this.state.name,
+          notes: this.state.notes
+        })
+      }).then(function (response) {
+        return response.json();
+      }).then(function (response) {
+        console.log(response);
+      }).catch(function (err) {
+        console.log(err);
+      });
     }
   }, {
     key: 'delete',
     value: function _delete(e) {
       // delete entity - DELETE
       e.preventDefault();
+      // deletes entities
+      fetch('https://fairestdb.p.rapidapi.com/friend/friendModel/_id/' + this.state.id, {
+        "method": "DELETE",
+        "headers": {
+          "x-rapidapi-host": "fairestdb.p.rapidapi.com",
+          "x-rapidapi-key": "fb23ab4ad4mshbecb8ba936f9fe7p101930jsn9e4bc76f18c0"
+        }
+      }).then(function (response) {
+        return response.json();
+      }).then(function (response) {
+        console.log(response);
+      }).catch(function (err) {
+        console.log(err);
+      });
     }
   }, {
     key: 'handleChange',
@@ -62,7 +205,7 @@ var App = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this4 = this;
 
       return React.createElement(
         'div',
@@ -97,7 +240,7 @@ var App = function (_React$Component) {
                   className: 'form-control',
                   value: this.state.name,
                   onChange: function onChange(e) {
-                    return _this2.handleChange({ name: e.target.value });
+                    return _this4.handleChange({ name: e.target.value });
                   },
                   required: true
                 })
@@ -113,7 +256,7 @@ var App = function (_React$Component) {
                   className: 'form-control',
                   value: this.state.notes,
                   onChange: function onChange(e) {
-                    return _this2.handleChange({ notes: e.target.value });
+                    return _this4.handleChange({ notes: e.target.value });
                   },
                   required: true
                 })
@@ -129,32 +272,33 @@ var App = function (_React$Component) {
                   className: 'form-control',
                   value: this.state.id,
                   onChange: function onChange(e) {
-                    return _this2.handleChange({ id: e.target.value });
+                    return _this4.handleChange({ id: e.target.value });
                   }
                 })
               ),
               React.createElement(
                 'button',
                 { className: 'btn btn-primary', type: 'button', onClick: function onClick(e) {
-                    return _this2.create(e);
+                    return _this4.create(e);
                   } },
                 'Add'
               ),
               React.createElement(
                 'button',
                 { className: 'btn btn-info', type: 'button', onClick: function onClick(e) {
-                    return _this2.update(e);
+                    return _this4.update(e);
                   } },
                 'Update'
               ),
               React.createElement(
                 'button',
                 { className: 'btn btn-danger', type: 'button', onClick: function onClick(e) {
-                    return _this2.delete(e);
+                    return _this4.delete(e);
                   } },
                 'Delete'
               )
-            )
+            ),
+            React.createElement(Friends, { friends: this.state.friends })
           )
         )
       );

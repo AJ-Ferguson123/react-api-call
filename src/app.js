@@ -1,5 +1,30 @@
 'use strict';
 
+class Friends extends React.Component {
+  render() {
+      return (
+          <table>
+              <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Since</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {this.props.friends && this.props.friends.map(friend => {
+                      return <tr>
+                          <td>{friend._id}</td>
+                          <td>{friend.name}</td>
+                          <td>{friend.since}</td>
+                      </tr>
+                  })}
+              </tbody>
+          </table>
+      );
+  }
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -18,25 +43,93 @@ class App extends React.Component {
 
   componentDidMount() {
     // get all entities - GET
-
+    fetch("https://fairestdb.p.rapidapi.com/friend/friendModel", {
+      "method": "GET",
+      "headers": {
+        "x-rapidapi-host": "fairestdb.p.rapidapi.com",
+        "x-rapidapi-key": "fb23ab4ad4mshbecb8ba936f9fe7p101930jsn9e4bc76f18c0"
+      }
+    })
+    .then(response => response.json())
+    .then(response => {
+      this.setState({
+        friends: response
+      })
+    })
+    .catch(err => { console.log(err); 
+    });
   }
 
   create(e) {
     // add entity - POST
     e.preventDefault();
 
+    // creates entity
+    fetch("https://fairestdb.p.rapidapi.com/friend/friendModel", {
+      "method": "POST",
+      "headers": {
+        "x-rapidapi-host": "fairestdb.p.rapidapi.com",
+        "x-rapidapi-key": "fb23ab4ad4mshbecb8ba936f9fe7p101930jsn9e4bc76f18c0",
+        "content-type": "application/json",
+        "accept": "application/json"
+      },
+      "body": JSON.stringify({
+        name: this.state.name,
+        notes: this.state.notes
+      })
+    })
+    .then(response => response.json())
+    .then(response => {
+      console.log(response)
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   update(e) {
     // update entity - PUT
     e.preventDefault();
 
+    // this will update entries with PUT
+    fetch("https://fairestdb.p.rapidapi.com/friend/friendModel", {
+        "method": "PUT",
+        "headers": {
+            "x-rapidapi-host": "fairestdb.p.rapidapi.com",
+            "x-rapidapi-key": "fb23ab4ad4mshbecb8ba936f9fe7p101930jsn9e4bc76f18c0",
+            "content-type": "application/json",
+            "accept": "application/json"
+        },
+        "body": JSON.stringify({
+            _id: this.state.id,
+            name: this.state.name,
+            notes: this.state.notes
+        })
+        })
+        .then(response => response.json())
+        .then(response => { console.log(response);
+        })
+        .catch(err => { console.log(err); });
   }
 
   delete(e) {
     // delete entity - DELETE
     e.preventDefault();
-
+    // deletes entities
+    fetch(`https://fairestdb.p.rapidapi.com/friend/friendModel/_id/${this.state.id}`, {
+      "method": "DELETE",
+      "headers": {
+        "x-rapidapi-host": "fairestdb.p.rapidapi.com",
+        "x-rapidapi-key": "fb23ab4ad4mshbecb8ba936f9fe7p101930jsn9e4bc76f18c0"
+      }
+    })
+    .then(response => response.json())
+    .then(response => {
+      console.log(response);
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   handleChange(changeObject) {
@@ -96,6 +189,7 @@ class App extends React.Component {
                     Delete
                 </button>
               </form>
+              <Friends friends={this.state.friends} />
             </div>
           </div>
         </div>
